@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>المنتجات</title>
 <style>
   .sold-out { color: red; font-weight: bold; }
@@ -19,35 +19,39 @@
   <button onclick="window.location.href='test-chart.html'">اذهب إلى السلة</button>
 </div>
 
-
-
-
 <div id="products"></div>
-
 <script src="script.js"></script>
 <script>
-// بيانات المنتجات لو مش موجودة قبل كده
-if(!localStorage.getItem("productsData")){
-  let products = [
+// **تحديث نسخة بيانات المنتجات (versioning)**
+const CURRENT_PRODUCTS_VERSION = 1; // زود الرقم لما تحدث بيانات المنتجات
+
+const storedVersion = localStorage.getItem('productsVersion');
+
+if (!storedVersion || parseInt(storedVersion) < CURRENT_PRODUCTS_VERSION) {
+  const products = [
     { id: 1, name: "عطر فاخر", price: 200, quantity: 12 },
     { id: 2, name: "لوشن ترطيب", price: 150, quantity: 5 },
     { id: 3, name: "بادي سبلاش", price: 100, quantity: 0 },
     { id: 4, name: "gjgjjg", price: 100, quantity: 0 },
     { id: 5, name: "7oda", price: 100, quantity: 0 }
   ];
-  localStorage.setItem("productsData", JSON.stringify(products));
+
+  localStorage.setItem('productsData', JSON.stringify(products));
+  localStorage.setItem('productsVersion', CURRENT_PRODUCTS_VERSION);
 }
 
-displayProducts();
+let selectedQuantities = {}; // تخزين الكميات المحددة لكل منتج
 
-function displayProducts(){
+function displayProducts() {
   let container = document.getElementById("products");
   let products = JSON.parse(localStorage.getItem("productsData"));
   container.innerHTML = "";
 
   products.forEach(prod => {
-    let qty = 1; // الكمية اللي يختارها المستخدم
-    let btnContent = prod.quantity > 0 
+    // القيمة الافتراضية للكمية المحددة 1 لو مش محددة
+    let qty = selectedQuantities[prod.id] || 1;
+
+    let btnContent = prod.quantity > 0
       ? `<div class="qty-controls">
            <button onclick="changeQty(${prod.id}, -1)">-</button>
            <span id="qty-${prod.id}">${qty}</span>
@@ -67,19 +71,49 @@ function displayProducts(){
   });
 }
 
-let selectedQuantities = {};
-
-function changeQty(id, change){
-  if(!selectedQuantities[id]) selectedQuantities[id] = 1;
+function changeQty(id, change) {
+  if (!selectedQuantities[id]) selectedQuantities[id] = 1;
   let products = JSON.parse(localStorage.getItem("productsData"));
   let prod = products.find(p => p.id === id);
 
   selectedQuantities[id] += change;
-  if(selectedQuantities[id] < 1) selectedQuantities[id] = 1;
-  if(selectedQuantities[id] > prod.quantity) selectedQuantities[id] = prod.quantity;
+  if (selectedQuantities[id] < 1) selectedQuantities[id] = 1;
+  if (selectedQuantities[id] > prod.quantity) selectedQuantities[id] = prod.quantity;
 
   document.getElementById(`qty-${id}`).innerText = selectedQuantities[id];
 }
+
+function addToCart(id) {
+  let products = JSON.parse(localStorage.getItem("productsData"));
+  let prod = products.find(p => p.id === id);
+  if (!prod || prod.quantity <= 0) return alert("المنتج غير متاح");
+
+  let qty = selectedQuantities[id] || 1;
+  if (qty > prod.quantity) return alert("لا يوجد كمية كافية");
+
+  // خصم الكمية من المخزون
+  prod.quantity -= qty;
+  localStorage.setItem("productsData", JSON.stringify(products));
+
+  // إضافة للسلة
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let existing = cart.find(item => item.id === id);
+  if (existing) {
+    existing.quantity += qty;
+  } else {
+    cart.push({ id: prod.id, name: prod.name, price: prod.price, quantity: qty });
+  }
+  localStorage.setItem("cart", JSON.stringify(cart));
+
+  alert("تمت الإضافة للسلة");
+
+  // إعادة عرض المنتجات بعد التعديل
+  displayProducts();
+}
+
+// استدعاء العرض لأول مرة
+displayProducts();
 </script>
+
 </body>
 </html>
