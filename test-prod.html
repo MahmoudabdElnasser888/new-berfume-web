@@ -1,23 +1,206 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>المنتجات</title>
 <style>
-  .sold-out { color: red; font-weight: bold; }
-  .qty-controls { display: flex; align-items: center; gap: 5px; }
-  button { padding: 5px 10px; }
+  body {
+    margin: 0;
+    font-family: 'Tahoma', sans-serif;
+    background: linear-gradient(to bottom, #133364 0%, #ffffff 100%);
+  }
+
+  /* ====== الهيدر ====== */
+  header {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(5px);
+  }
+
+  header h1 {
+    color: white;
+    margin: 0;
+    font-size: 24px;
+  }
+
+ /* زر السلة */
+  .cart-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    animation: bounce 2s infinite;
+  }
+
+  .cart-btn i {
+    fill: white;
+    font-size: 30px;
+    width: 32px;
+    height: 32px;
+    transition: transform 0.3s ease;
+  }
+
+  .cart-btn:hover svg {
+    transform: scale(1.2);
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+
+
+   /* ====== المنتجات ====== */
+  #products {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
+    padding: 20px;
+  }
+
+  .product-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  }
+
+  .product-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+
+
+
+  .product-details {
+    padding: 15px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .product-details h3 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    color: #0d47a1;
+  }
+
+  .product-details p {
+    font-size: 14px;
+    color: #555;
+    flex: 1;
+  }
+
+  .price {
+    margin: 10px 0;
+  }
+
+  .old-price {
+    text-decoration: line-through;
+    color: #888;
+    margin-right: 10px;
+  }
+
+
+  .new-price {
+    font-weight: bold;
+    color: #0d47a1;
+    font-size: 18px;
+  }
+
+  .qty-controls {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .qty-controls button {
+    background: #0d47a1;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  .qty-controls span {
+    margin: 0 8px;
+    font-weight: bold;
+  }
+
+
+ button {
+    background: #0d47a1;
+    color: white;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.3s;
+  }
+
+  button:hover {
+    background: #08306b;
+  }
+
+  .sold-out {
+    color: red;
+    font-weight: bold;
+  }
+
+  @media (max-width: 600px) {
+    #products {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
 </style>
 </head>
 <body>
 
-<h1>صفحة المنتجات</h1>
+  <header>
+  <h1>Products</h1>
+  <button class="cart-btn" onclick="window.location.href='test-chart.html'">
+    <!-- أيقونة السلة -->
+    <i class="fas fa-shopping-cart cart-icon" title="Go to Cart" role="button" tabindex="0" aria-label="Go to Cart"></i>
+  </button>
+</header>
 
-<div style="margin-bottom: 20px;">
-  <button onclick="window.location.href='admin.html'">لوحة إدارة المخزون</button>
-  <button onclick="window.location.href='test-chart.html'">اذهب إلى السلة</button>
-</div>
+
+
+
+
+
+
+
 
 <div id="products"></div>
 <script src="script.js"></script>
@@ -60,14 +243,21 @@ function displayProducts() {
          <button onclick="addToCart(${prod.id})">Add to Cart</button>`
       : `<span class="sold-out">Sold Out</span>`;
 
-    container.innerHTML += `
-      <div>
-        <h3>${prod.name}</h3>
-        <p>السعر: ${prod.price} جنيه</p>
-        ${btnContent}
+  container.innerHTML += `
+  <div class="product-card">
+    <img src="images/${prod.id}.jpg" alt="${prod.name}">
+    <div class="product-details">
+      <h3>${prod.name}</h3>
+      <p>وصف مختصر للمنتج هنا</p>
+      <div class="price">
+        <span class="old-price">${prod.price + 50} جنيه</span>
+        <span class="new-price">${prod.price} جنيه</span>
       </div>
-      <hr>
-    `;
+      ${btnContent}
+    </div>
+  </div>
+`;
+
   });
 }
 

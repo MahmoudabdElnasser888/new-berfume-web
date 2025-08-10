@@ -1,63 +1,189 @@
+
 <!DOCTYPE html>
 <html lang="ar">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>سلة المشتريات</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: linear-gradient(to bottom, #d4e9ff, #ffffff);
+}
+
+header {
+  background: rgba(0, 0, 50, 0.8);
+  color: white;
+  padding: 15px;
+  text-align: center;
+}
+
+h1 {
+  margin: 0;
+}
+
+#cart {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 15px;
+  padding: 20px;
+}
+
+.cart-card {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+
+.cart-card:hover {
+  transform: translateY(-5px);
+}
+
+.cart-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.card-details {
+  padding: 15px;
+  text-align: center;
+}
+
+.old-price {
+  text-decoration: line-through;
+  color: gray;
+  font-size: 14px;
+  display: block;
+}
+
+.new-price {
+  color: red;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+button {
+  background: #007bff;
+  border: none;
+  color: white;
+  padding: 8px 15px;
+  margin: 5px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background: #0056b3;
+}
+
+.checkout-btn {
+  display: block;
+  width: 90%;
+  margin: 20px auto;
+  padding: 12px;
+  font-size: 18px;
+}
+</style>
 </head>
 <body>
 
-<h1>سلة المشتريات</h1>
+<header>
+  <h1>🛒 سلة المشتريات</h1>
+</header>
+<button onclick="history.back()">⬅ عودة</button>
+
 <div id="cart"></div>
 
+<!-- زرار الشراء -->
 <button onclick="showCheckoutForm()">اشتري الآن</button>
 
-<div id="checkoutForm" style="display:none;">
-  <h2>بيانات الشراء</h2>
-  <form id="orderForm">
-    <input type="text" id="name" placeholder="الاسم" required><br>
-    <input type="text" id="phone1" placeholder="رقم الهاتف 1" required><br>
-    <input type="text" id="phone2" placeholder="رقم الهاتف 2" required><br>
-    <input type="text" id="address" placeholder="العنوان" required><br>
-    <button type="submit">تأكيد الطلب</button>
-  </form>
-</div>
+<!-- الفورم -->
+<form id="checkoutForm" action="https://formsubmit.co/modynasser164@gmail.com" method="POST" style="display:none; margin-top: 20px;">
+    <input type="text" name="name" placeholder="الاسم" required>
+    <input type="tel" name="phone1" placeholder="رقم الهاتف الأول" required>
+    <input type="tel" name="phone2" placeholder="رقم الهاتف الثاني">
+    <input type="text" name="address" placeholder="العنوان" required>
 
-<script src="script.js"></script>
+    <!-- حقل مخفي لكل المنتجات -->
+    <textarea name="orderDetails" id="orderDetails" style="display:none;"></textarea>
+
+    <button type="submit">إرسال الطلب</button>
+
+    <!-- إعدادات FormSubmit -->
+    <input type="hidden" name="_captcha" value="false">
+    <input type="hidden" name="_next" value="https://yourwebsite.com/thanks.html">
+</form>
+
 <script>
-displayCart();
-
 function showCheckoutForm(){
-  document.getElementById("checkoutForm").style.display = "block";
+    // عرض الفورم
+    document.getElementById("checkoutForm").style.display = "block";
+
+    // جلب بيانات السلة من localStorage
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    if(cart.length > 0){
+        // تحويل كل المنتجات لنص
+        let details = cart.map(item => '${item.name} - الكمية: ${item.quantity}').join("\n");
+        document.getElementById("orderDetails").value = details;
+    } else {
+        document.getElementById("orderDetails").value = "لا يوجد منتجات";
+    }
+}
+</script>
+
+<script>
+function displayCart(){
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let container = document.getElementById("cart");
+  container.innerHTML = "";
+
+  if(cart.length === 0){
+    container.innerHTML = "<p style='text-align:center;'>السلة فارغة</p>";
+    return;
+  }
+
+  cart.forEach(item => {
+    container.innerHTML += `
+      <div class="cart-card">
+        <img src="images/${item.id}.jpg" alt="${item.name}">
+        <div class="card-details">
+          <h3>${item.name}</h3>
+          <span class="old-price">${item.price + 50} جنيه</span>
+          <span class="new-price">${item.price} جنيه</span>
+          <p>الكمية: ${item.quantity}</p>
+          <button onclick="removeFromCart(${item.id})">إزالة</button>
+        </div>
+      </div>
+    `;
+  });
 }
 
-// إرسال الفورم
-document.getElementById("orderForm").addEventListener("submit", function(e){
-  e.preventDefault();
-  let name = document.getElementById("name").value;
-  let phone1 = document.getElementById("phone1").value;
-  let phone2 = document.getElementById("phone2").value;
-  let address = document.getElementById("address").value;
-
+function removeFromCart(id){
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-  // هنا تقدر تبعته لـ Backend أو إيميل
-  console.log("طلب جديد:", {name, phone1, phone2, address, cart});
-
-  // تحديث الكميات
   let products = JSON.parse(localStorage.getItem("productsData")) || [];
-  cart.forEach(item => {
-    let prod = products.find(p => p.id === item.id);
-    if(prod) prod.quantity -= item.quantity;
-  });
+
+  let itemToRemove = cart.find(item => item.id === id);
+  if(itemToRemove){
+    let prod = products.find(p => p.id === id);
+    if(prod){
+      prod.quantity += itemToRemove.quantity;
+    }
+  }
+
   localStorage.setItem("productsData", JSON.stringify(products));
+  cart = cart.filter(item => item.id !== id);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  displayCart();
+}
 
-  // مسح السلة
-  localStorage.removeItem("cart");
-
-  alert("تم تأكيد الطلب");
-  window.location.href = "products.html";
-});
+displayCart();
 </script>
+
 </body>
 </html>
