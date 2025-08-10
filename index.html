@@ -396,28 +396,6 @@
     </div>
   </section>
 
-  <section id="about" aria-label="About Us Section">
-    <h2>About Us</h2>
-    <div class="faq-card" tabindex="0" role="button" aria-expanded="false" aria-controls="faq1">
-      <div class="faq-question" id="faq1">What makes our products special?</div>
-      <div class="faq-answer">Our products are manufactured using the finest ingredients for a unique experience.</div>
-    </div>
-
-<div class="faq-card" tabindex="0" role="button" aria-expanded="false" aria-controls="faq1">
-      <div class="faq-question" id="faq1">Is the registered with the state authority??</div>
-      <div class="faq-answer">Of course, and this is the registration number E,D,A Reg. No : 57652/2020.</div>
-    </div>
-
-    <div class="faq-card" tabindex="0" role="button" aria-expanded="false" aria-controls="faq2">
-      <div class="faq-question" id="faq2">Are the lotions safe for sensitive skin?</div>
-      <div class="faq-answer">Yes, our lotions are dermatologically tested and safe for all skin types.</div>
-    </div>
-    <div class="faq-card" tabindex="0" role="button" aria-expanded="false" aria-controls="faq3">
-      <div class="faq-question" id="faq3">Do you offer international shipping?</div>
-      <div class="faq-answer">Currently, we offer shipping within the country, but international shipping is coming soon.</div>
-    </div>
-  </section>
-
   <section id="PRODUCTS" class="products" aria-label="Our Perfumes Section">
     <h2 class="title">OUR PRODUCTS</h2>
     <div class="content">
@@ -459,6 +437,28 @@
         </div>
       </div>
 
+    </div>
+  </section>
+
+    <section id="about" aria-label="About Us Section">
+    <h2>About Us</h2>
+    <div class="faq-card" tabindex="0" role="button" aria-expanded="false" aria-controls="faq1">
+      <div class="faq-question" id="faq1">What makes our products special?</div>
+      <div class="faq-answer">Our products are manufactured using the finest ingredients for a unique experience.</div>
+    </div>
+
+<div class="faq-card" tabindex="0" role="button" aria-expanded="false" aria-controls="faq1">
+      <div class="faq-question" id="faq1">Is the registered with the state authority??</div>
+      <div class="faq-answer">Of course, and this is the registration number E,D,A Reg. No : 57652/2020.</div>
+    </div>
+
+    <div class="faq-card" tabindex="0" role="button" aria-expanded="false" aria-controls="faq2">
+      <div class="faq-question" id="faq2">Are the lotions safe for sensitive skin?</div>
+      <div class="faq-answer">Yes, our lotions are dermatologically tested and safe for all skin types.</div>
+    </div>
+    <div class="faq-card" tabindex="0" role="button" aria-expanded="false" aria-controls="faq3">
+      <div class="faq-question" id="faq3">Do you offer international shipping?</div>
+      <div class="faq-answer">Currently, we offer shipping within the country, but international shipping is coming soon.</div>
     </div>
   </section>
 
@@ -516,6 +516,14 @@
         }
       });
     });
+
+    document.querySelector('.shop-btn').addEventListener('click', () => {
+  const target = document.getElementById('PRODUCTS');
+  if(target){
+    target.scrollIntoView({ behavior: 'smooth' });
+  }
+});
+
   </script>
 </body>
 </html>
