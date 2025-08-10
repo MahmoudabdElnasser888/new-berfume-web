@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سلة المشتريات</title>
+</head>
+<body>
+
+<h1>سلة المشتريات</h1>
+<div id="cart"></div>
+
+<button onclick="showCheckoutForm()">اشتري الآن</button>
+
+<div id="checkoutForm" style="display:none;">
+  <h2>بيانات الشراء</h2>
+  <form id="orderForm">
+    <input type="text" id="name" placeholder="الاسم" required><br>
+    <input type="text" id="phone1" placeholder="رقم الهاتف 1" required><br>
+    <input type="text" id="phone2" placeholder="رقم الهاتف 2" required><br>
+    <input type="text" id="address" placeholder="العنوان" required><br>
+    <button type="submit">تأكيد الطلب</button>
+  </form>
+</div>
+
+<script src="script.js"></script>
+<script>
+displayCart();
+
+function showCheckoutForm(){
+  document.getElementById("checkoutForm").style.display = "block";
+}
+
+// إرسال الفورم
+document.getElementById("orderForm").addEventListener("submit", function(e){
+  e.preventDefault();
+  let name = document.getElementById("name").value;
+  let phone1 = document.getElementById("phone1").value;
+  let phone2 = document.getElementById("phone2").value;
+  let address = document.getElementById("address").value;
+
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  // هنا تقدر تبعته لـ Backend أو إيميل
+  console.log("طلب جديد:", {name, phone1, phone2, address, cart});
+
+  // تحديث الكميات
+  let products = JSON.parse(localStorage.getItem("productsData")) || [];
+  cart.forEach(item => {
+    let prod = products.find(p => p.id === item.id);
+    if(prod) prod.quantity -= item.quantity;
+  });
+  localStorage.setItem("productsData", JSON.stringify(products));
+
+  // مسح السلة
+  localStorage.removeItem("cart");
+
+  alert("تم تأكيد الطلب");
+  window.location.href = "products.html";
+});
+</script>
+</body>
+</html>

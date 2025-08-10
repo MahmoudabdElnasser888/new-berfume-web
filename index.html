@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Perfume</title>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <!-- Cairo Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: #41498b;
+      
+      color: #ffffff;
+      overflow-x: hidden;
+    }
+
+    /* ===== HEADER ===== */
+    header {
+      position: fixed;
+      width: 100%;
+      top: 0;
+      left: 0;
+      background-color: rgba(27, 27, 27, 0.521); /* شفاف مع بلور */
+      backdrop-filter: blur(7px);
+      color: #000000;
+      padding: 10px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      
+    }
+
+    header h1 {
+      font-size: 24px;
+      color: #ffffff;
+      user-select: none;
+    }
+
+    .cart-icon {
+      font-size: 26px;
+      color: #ffffff;
+      cursor: pointer;
+      transition: color 0.3s ease;
+      user-select: none;
+    }
+
+    .cart-icon:hover {
+      color: #000000;
+       box-shadow: 0 0 25px rgba(255, 255, 255, 1),
+              0 0 50px rgba(255, 255, 255, 0.8);
+    }
+
+    /* ===== SLIDER ===== */
+    .hero {
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+      padding-top: 60px; /* لتحت الهيدر */
+    }
+
+    .slides-container {
+      display: flex;
+      width: 300%; /* 3 صور في صف */
+      height: 100vh;
+      transition: transform 1s ease-in-out;
+    }
+
+    .slide {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .slide img.desktop-img {
+      width: 100%;
+      height: 150vh;
+      object-fit: cover;
+      user-select: none;
+    }
+
+    .slide img.mobile-img {
+      display: none;
+      width: 100%;
+      height: 100vh;
+      object-fit: cover;
+      user-select: none;
+    }
+
+    /* صور الموبايل تظهر فقط تحت 768 */
+    @media (max-width: 768px) {
+      .slide img.desktop-img {
+        display: none;
+      }
+      .slide img.mobile-img {
+        display: block;
+       
+      }
+    }
+
+    /* نص فوق السلايدر */
+    .hero-text {
+     position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column; /* عشان يبقى عمودي */
+  align-items: center;    /* يركزهم أفقياً */
+  justify-content: center; /* يركزهم عمودياً لو فيه ارتفاع */
+  text-align: center;     /* النص يتوسط */
+  gap: 15px;       
+    }
+
+    .hero-text h2 {
+      font-size: 40px;
+      margin-bottom: 10px;
+      font-weight: 700;
+      user-select: none;
+    }
+
+    .hero-text p {
+      font-size: 25px;
+      margin-bottom: 20px;
+      font-weight: 600;
+      user-select: none;
+    }
+
+    .shop-btn {
+      background-color: transparent;
+  color: white; /* لون النص */
+  border: 2px solid white; /* إطار أبيض */
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 140px;
+  margin-left: 26PX;
+  margin-bottom: 180PX;
+    }
+
+    .shop-btn:hover {
+      background-color: #a09c95;
+    
+       box-shadow: 0 0 25px rgba(255, 255, 255, 1),
+              0 0 50px rgb(255, 255, 255);
+    }
+
+    /* ===== ABOUT US ===== */
+    #about {
+      padding: 60px 20px;
+      background-color: #41498b;
+      
+      background: linear-gradient(to right,#41498b ,#41498b );
+      max-width: 900px;
+      margin: 0 auto 60px auto;
+      border-radius: 15px;
+      box-shadow: 0 0 20px #41498b ;
+    }
+
+    #about h2 {
+      text-align: center;
+      color: rgb(255, 255, 255);
+      font-size: 32px;
+      margin-bottom: 30px;
+      user-select: none;
+    }
+
+    .faq-card {
+      background: rgb(236, 233, 233);
+      border-radius: 10px;
+      margin: 10px 0;
+      padding: 20px 25px;
+      box-shadow: 0 4px 10px rgb(146, 136, 136);
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+
+    .faq-card:hover {
+      background-color: #ffffff;
+    }
+
+    .faq-question {
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: #4a3b31;
+    }
+
+    .faq-answer {
+      margin-top: 15px;
+      color: #4a3b31;
+      font-size: 1rem;
+      line-height: 1.5;
+      display: none;
+    }
+
+    .faq-card.active .faq-answer {
+      display: block;
+    }
+
+    /* ===== PRODUCTS ===== */
+    #PRODUCTS {
+      padding: 60px 20px;
+      background-color: #41498b;
+      max-width: 1200px;
+      margin: 0 auto 60px auto;
+      border-radius: 15px;
+   
+    }
+
+    #PRODUCTS .title {
+      font-size: 28px;
+      margin-bottom: 20px;
+      color: rgb(255, 255, 255);
+      user-select: none;
+    }
+
+    #PRODUCTS .content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+      gap: 20px;
+    }
+
+    #PRODUCTS .card {
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      user-select: none;
+    }
+
+    #PRODUCTS .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(219,165,99,0.5);
+    }
+
+    #PRODUCTS .card img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 8px;
+      
+    }
+
+    #PRODUCTS .card h3 {
+      margin: 15px 0 10px 0;
+      color: #4a3b31;
+    }
+
+    #PRODUCTS .card p {
+      font-size: 0.9rem;
+      color: #555;
+      line-height: 1.4;
+      height: 65px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #PRODUCTS .price {
+      margin-top: 10px;
+      font-weight: 700;
+      color: goldenrod;
+    }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background-color: #0a0d20;
+      color: goldenrod;
+      text-align: center;
+      padding: 25px 20px;
+      user-select: none;
+    }
+
+    .social-icons a {
+      margin: 0 12px;
+      color: rgb(255, 255, 255);
+      font-size: 26px;
+      transition: color 0.3s ease;
+    }
+
+    .social-icons a:hover {
+      color: #000000;
+    }
+
+    .footer-text {
+      margin-top: 15px;
+      font-size: 16px;
+      color: goldenrod;
+    }
+
+    .footer-text a {
+      color: goldenrod;
+      text-decoration: none;
+      font-weight: 700;
+      transition: color 0.3s ease;
+    }
+
+    .footer-text a:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    /* ===== Animations ===== */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.05);
+        opacity: 0.85;
+      }
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 768px) {
+      .hero-text {
+          top: 40%; /* بدل 50% خليها أعلى */
+    left: 40%; /* بدل 50% خليها شمال */
+    transform: translate(-30%, -30%);
+    
+      }
+
+      .hero-text h2 {
+        font-size: 28px;
+      }
+
+      .hero-text p {
+        font-size: 18px;
+      }
+
+      #PRODUCTS .content {
+        grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>PERFUME</h1>
+    <i class="fas fa-shopping-cart cart-icon" title="Go to Cart" role="button" tabindex="0" aria-label="Go to Cart"></i>
+  </header>
+
+  <section class="hero">
+    <div class="slides-container" aria-label="Image slider" role="region">
+      <div class="slide">
+        <img src="NOT JUST A LOOK.... BUT A LEGACY.png" alt="Perfume Slide 1" class="desktop-img" />
+        <img src="NOT JUST A LOOK.....png" alt="Perfume Slide 1 Mobile" class="mobile-img" />
+      </div>
+      <div class="slide">
+        <img src="LOTION AND BODY SPLASH (4).png" alt="Perfume Slide 2" class="desktop-img" />
+        <img src="LOTION AND BODY SPLASH MOB.png" alt="Perfume Slide 2 Mobile" class="mobile-img" />
+      </div>
+      <div class="slide">
+        <img src="PERF.png" alt="Perfume Slide 3" class="desktop-img" />
+        <img src="A DROP OF MYSTREY A WORLD OF.png" alt="Perfume Slide 3 Mobile" class="mobile-img" />
+      </div>
+    </div>
+
+    <div class="hero-text" role="banner" aria-live="polite">
+      
+      <button class="shop-btn" aria-label="Shop Now Button">Shop Now</button>
+    </div>
+  </section>
+
+  <section id="about" aria-label="About Us Section">
+    <h2>About Us</h2>
+    <div class="faq-card" tabindex="0" role="button" aria-expanded="false" aria-controls="faq1">
+      <div class="faq-question" id="faq1">What makes our products special?</div>
+      <div class="faq-answer">Our products are manufactured using the finest ingredients for a unique experience.</div>
+    </div>
+
+<div class="faq-card" tabindex="0" role="button" aria-expanded="false" aria-controls="faq1">
+      <div class="faq-question" id="faq1">Is the registered with the state authority??</div>
+      <div class="faq-answer">Of course, and this is the registration number E,D,A Reg. No : 57652/2020.</div>
+    </div>
+
+    <div class="faq-card" tabindex="0" role="button" aria-expanded="false" aria-controls="faq2">
+      <div class="faq-question" id="faq2">Are the lotions safe for sensitive skin?</div>
+      <div class="faq-answer">Yes, our lotions are dermatologically tested and safe for all skin types.</div>
+    </div>
+    <div class="faq-card" tabindex="0" role="button" aria-expanded="false" aria-controls="faq3">
+      <div class="faq-question" id="faq3">Do you offer international shipping?</div>
+      <div class="faq-answer">Currently, we offer shipping within the country, but international shipping is coming soon.</div>
+    </div>
+  </section>
+
+  <section id="PRODUCTS" class="products" aria-label="Our Perfumes Section">
+    <h2 class="title">OUR PRODUCTS</h2>
+    <div class="content">
+      <div class="card" tabindex="0" role="button" onclick="location.href='jean-paul.html'">
+        <img src="splah start 2.jpg" alt="Jean Paul La male" />
+        <h3>BODY SPLASH</h3>
+        <p>"Body Splash is a light, refreshing mist that adds a burst of fragrance while gently hydrating your skin. Perfect for a quick pick-me-up, it keeps you smelling fresh and feeling energized throughout the day."
+
+</p>
+        <div class="price">
+        </div>
+      </div>
+
+      <div class="card" tabindex="0" role="button" onclick="location.href='sauvage.html'">
+        <img src="lotion start.jpg" alt="Sauvage Dior" />
+        <h3>LOTION</h3>
+        <p>"Lotion is a lightweight, creamy moisturizer designed to keep your skin soft, smooth, and hydrated. It absorbs quickly, leaving a delicate touch and often a refreshing scent that makes your skin feel pampered and renewed."
+
+</p>
+        <div class="price">
+        </div>
+      </div>
+
+      <div class="card" tabindex="0" role="button" onclick="location.href='stronger.html'">
+        <img src="valentino.jpg" alt="Valentino Eau de Parfum Hombre" />
+        <h3>PERFUMES</h3>
+        <p>Perfume is a blend of fine aromatic oils that creates a lasting fragrance, expressing your personality and leaving an unforgettable impression. Just a few sprays can transform your mood and elevate your presence."
+
+</p>
+        <div class="price">
+        </div>
+      </div>
+
+   <div class="card" tabindex="0" role="button" onclick="location.href='test-prod.html'">
+        <img src="combo.jpg" alt="Valentino Eau de Parfum Hombre" />
+        <h3>COMBO</h3>
+        <p>"A complete set crafted for you, with more value for less."</p>
+        <div class="price">
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <div class="social-icons" aria-label="Social media links">
+      <a href="https://instagram.com/yourusername" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+      <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+      <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+    </div>
+    <div class="footer-text">
+      This website made by <a href="https://instagram.com/yourusername" target="_blank" rel="noopener noreferrer" style="color: goldenrod; font-weight: 700;">Mahmoud Nasser</a>
+    </div>
+  </footer>
+
+  <script>
+    // Slideshow
+    const slidesContainer = document.querySelector('.slides-container');
+    const totalSlides = document.querySelectorAll('.slide').length;
+    let index = 0;
+    setInterval(() => {
+      index = (index + 1) % totalSlides;
+      slidesContainer.style.transform = `translateX(-${index * 100}vw)`;
+    }, 4000);
+
+    // Shop Now button scrolls to About Us
+    document.querySelector('.shop-btn').addEventListener('click', () => {
+      document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // Cart icon click opens cart page
+    const cartIcon = document.querySelector('.cart-icon');
+    cartIcon.addEventListener('click', () => {
+      window.location.href = 'cart.html';
+    });
+    cartIcon.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        window.location.href = 'cart.html';
+      }
+    });
+
+    // FAQ toggle
+    document.querySelectorAll('.faq-card').forEach(card => {
+      card.addEventListener('click', () => {
+        card.classList.toggle('active');
+        const expanded = card.classList.contains('active');
+        card.setAttribute('aria-expanded', expanded);
+      });
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          card.classList.toggle('active');
+          const expanded = card.classList.contains('active');
+          card.setAttribute('aria-expanded', expanded);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
