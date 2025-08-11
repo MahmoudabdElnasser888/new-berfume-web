@@ -206,17 +206,15 @@
 <script src="script.js"></script>
 <script>
 // **تحديث نسخة بيانات المنتجات (versioning)**
-const CURRENT_PRODUCTS_VERSION = 1; // زود الرقم لما تحدث بيانات المنتجات
+const CURRENT_PRODUCTS_VERSION = 9; // زود الرقم لما تحدث بيانات المنتجات
 
 const storedVersion = localStorage.getItem('productsVersion');
 
 if (!storedVersion || parseInt(storedVersion) < CURRENT_PRODUCTS_VERSION) {
   const products = [
-    { id: 1, name: "عطر فاخر", price: 200, quantity: 12 },
-    { id: 2, name: "لوشن ترطيب", price: 150, quantity: 5 },
-    { id: 3, name: "بادي سبلاش", price: 100, quantity: 0 },
-    { id: 4, name: "gjgjjg", price: 100, quantity: 0 },
-    { id: 5, name: "7oda", price: 100, quantity: 0 }
+    { id: 1, name: "BODY SPLASH & BODY LOTION(strawberry cheesecake)", price: 250, quantity: 12, description:"", image:"" },
+    { id: 2, name: "BODY SPLASH & BODY LOTION(pound cake)", price: 250, quantity: 12, description:"", image:"" },
+    { id: 3, name: "BODY SPLASH & BODY LOTION(french fragrance)", price: 250, quantity: 12, description:"", image:"dermopect wite.jpg" }
   ];
 
   localStorage.setItem('productsData', JSON.stringify(products));
@@ -245,12 +243,13 @@ function displayProducts() {
 
   container.innerHTML += `
   <div class="product-card">
-    <img src="images/${prod.id}.jpg" alt="${prod.name}">
+    <img src="${prod.image}" alt="${prod.name}">
+
     <div class="product-details">
       <h3>${prod.name}</h3>
-      <p>وصف مختصر للمنتج هنا</p>
+      <p>${prod.description}</p>
       <div class="price">
-        <span class="old-price">${prod.price + 50} جنيه</span>
+        <span class="old-price">${prod.price + 75} جنيه</span>
         <span class="new-price">${prod.price} جنيه</span>
       </div>
       ${btnContent}

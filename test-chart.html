@@ -99,90 +99,137 @@ button:hover {
 
 <div id="cart"></div>
 
-<!-- زرار الشراء -->
-<button onclick="showCheckoutForm()">اشتري الآن</button>
+<!-- زر اشتري الآن -->
+<button id="buyNowBtn" class="checkout-btn">اشتري الآن</button>
 
-<!-- الفورم -->
-<form id="checkoutForm" action="https://formsubmit.co/modynasser164@gmail.com" method="POST" style="display:none; margin-top: 20px;">
-    <input type="text" name="name" placeholder="الاسم" required>
-    <input type="tel" name="phone1" placeholder="رقم الهاتف الأول" required>
-    <input type="tel" name="phone2" placeholder="رقم الهاتف الثاني">
-    <input type="text" name="address" placeholder="العنوان" required>
+<!-- نافذة إتمام الطلب -->
+<div id="checkoutModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:10000; align-items:center; justify-content:center;">
+  <form id="checkoutForm" action="https://formsubmit.co/modynasser164@gmail.com" method="POST" style="background:#fff; max-width:520px; width:92%; padding:18px; border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,0.3); direction:rtl; color:#111;">
+    <h2 style="text-align:center; margin-bottom:12px;">إتمام الطلب</h2>
 
-    <!-- حقل مخفي لكل المنتجات -->
+    <!-- ملخص الطلب -->
+    <div id="cartSummary" style="background:#f5f5f5; padding:10px; border-radius:8px; max-height:200px; overflow:auto; margin-bottom:10px;"></div>
+
+    <!-- بيانات العميل -->
+    <div style="display:flex; gap:8px; flex-direction:column;">
+      <input type="text" name="name" id="custName" placeholder="الاسم" required>
+      <input type="tel" name="phone1" id="custPhone1" placeholder="رقم الهاتف الأول" required>
+      <input type="tel" name="phone2" id="custPhone2" placeholder="رقم الهاتف الثاني (اختياري)">
+      <input type="text" name="address" id="custAddress" placeholder="العنوان" required>
+    </div>
+
     <textarea name="orderDetails" id="orderDetails" style="display:none;"></textarea>
-
-    <button type="submit">إرسال الطلب</button>
 
     <!-- إعدادات FormSubmit -->
     <input type="hidden" name="_captcha" value="false">
     <input type="hidden" name="_next" value="https://yourwebsite.com/thanks.html">
-</form>
+
+    <div style="display:flex; gap:10px; margin-top:12px;">
+      <button type="submit" style="flex:1; background:#28a745;">إرسال الطلب</button>
+      <button type="button" id="cancelCheckout" style="flex:1; background:#ccc; color:#111;">إلغاء</button>
+    </div>
+    <p style="font-size:12px; color:#666; margin-top:8px;">ستصلك رسالة تأكيد على رقم الهاتف عند أول مرة.</p>
+  </form>
+</div>
 
 <script>
-function showCheckoutForm(){
-    // عرض الفورم
-    document.getElementById("checkoutForm").style.display = "block";
-
-    // جلب بيانات السلة من localStorage
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-    if(cart.length > 0){
-        // تحويل كل المنتجات لنص
-        let details = cart.map(item => '${item.name} - الكمية: ${item.quantity}').join("\n");
-        document.getElementById("orderDetails").value = details;
-    } else {
-        document.getElementById("orderDetails").value = "لا يوجد منتجات";
-    }
+// جلب السلة من localStorage
+function getCart() {
+  try {
+    return JSON.parse(localStorage.getItem('cart')) || [];
+  } catch (e) {
+    return [];
+  }
 }
-</script>
 
-<script>
-function displayCart(){
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  let container = document.getElementById("cart");
-  container.innerHTML = "";
+// إنشاء تفاصيل الطلب
+function buildOrderLines(cart) {
+  return cart.map(item => `${item.name} - الكمية: ${item.quantity} (السعر: ${item.price || 'N/A'})`);
+}
 
-  if(cart.length === 0){
-    container.innerHTML = "<p style='text-align:center;'>السلة فارغة</p>";
+
+// عرض ملخص الطلب
+function renderCartSummary(cart) {
+  const div = document.getElementById('cartSummary');
+  if (!cart || cart.length === 0) {
+    div.innerHTML = '<p style="text-align:center; color:#555;">السلة فارغة</p>';
+    return;
+  }
+  div.innerHTML = cart.map(item => `
+    <div style="padding:6px 8px; border-bottom:1px solid #e6e6e6;">
+      <strong>${escapeHtml(item.name)}</strong><br>
+      <small>الكمية: ${item.quantity} • السعر: ${item.price || 0} جنيه</small>
+    </div>
+  `).join('');
+}
+
+// حماية النص
+function escapeHtml(text) {
+  if (typeof text !== 'string') return text;
+  return text.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+// عند الضغط على "اشتري الآن"
+document.getElementById('buyNowBtn').addEventListener('click', () => {
+  const cart = getCart();
+  if (!cart.length) {
+    alert('السلة فارغة - أضف منتج أولًا.');
+    return;
+  }
+  renderCartSummary(cart);
+  document.getElementById('orderDetails').value = buildOrderLines(cart).join('\n');
+  document.getElementById('checkoutModal').style.display = 'flex';
+});
+
+// إلغاء الطلب
+document.getElementById('cancelCheckout').addEventListener('click', () => {
+  document.getElementById('checkoutModal').style.display = 'none';
+});
+
+// إرسال الطلب
+document.getElementById('checkoutForm').addEventListener('submit', e => {
+  const cart = getCart();
+  if (!cart.length) {
+    e.preventDefault();
+    alert('السلة فارغة.');
+    document.getElementById('checkoutModal').style.display = 'none';
+    return;
+  }
+  document.getElementById('orderDetails').value = buildOrderLines(cart).join('\n');
+  setTimeout(() => {
+    localStorage.removeItem('cart');
+  }, 800);
+});
+
+// عرض المنتجات في صفحة السلة
+function renderCartItems() {
+  const cart = getCart();
+  const container = document.getElementById('cart');
+
+  if (!cart.length) {
+    container.innerHTML = '<p style="text-align:center; color:#555;">السلة فارغة</p>';
     return;
   }
 
-  cart.forEach(item => {
-    container.innerHTML += `
-      <div class="cart-card">
-        <img src="images/${item.id}.jpg" alt="${item.name}">
-        <div class="card-details">
-          <h3>${item.name}</h3>
-          <span class="old-price">${item.price + 50} جنيه</span>
-          <span class="new-price">${item.price} جنيه</span>
-          <p>الكمية: ${item.quantity}</p>
-          <button onclick="removeFromCart(${item.id})">إزالة</button>
-        </div>
+  container.innerHTML = cart.map(item => `
+    <div class="cart-card">
+      <img src="${item.image || 'default.jpg'}" alt="${escapeHtml(item.name)}">
+      <div class="card-details">
+        <h3>${escapeHtml(item.name)}</h3>
+        <span class="new-price">${item.price} جنيه</span>
+        <p>الكمية: ${item.quantity}</p>
       </div>
-    `;
-  });
+    </div>
+  `).join('');
 }
 
-function removeFromCart(id){
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  let products = JSON.parse(localStorage.getItem("productsData")) || [];
+// شغل عرض السلة أول ما الصفحة تفتح
+renderCartItems();
 
-  let itemToRemove = cart.find(item => item.id === id);
-  if(itemToRemove){
-    let prod = products.find(p => p.id === id);
-    if(prod){
-      prod.quantity += itemToRemove.quantity;
-    }
-  }
 
-  localStorage.setItem("productsData", JSON.stringify(products));
-  cart = cart.filter(item => item.id !== id);
-  localStorage.setItem("cart", JSON.stringify(cart));
-  displayCart();
-}
 
-displayCart();
+
+
 </script>
 
 </body>

@@ -525,6 +525,37 @@
   }
 });
 
+
+
+
+
+// ====== فتح صفحة الأدمن بعد 5 ضغطات على كلمة PERfUME ======
+const perfumeTitle = document.querySelector('header h1'); // كلمة PERfUME
+let clickCount = 0;
+let clickTimer;
+
+// رابط صفحة الأدمن (غيره حسب مسارك)
+const adminPage = 'admin.html'; 
+
+perfumeTitle.addEventListener('click', () => {
+  clickCount++;
+
+  // إعادة ضبط العداد بعد 4 ثواني بدون ضغطات
+  clearTimeout(clickTimer);
+  clickTimer = setTimeout(() => {
+    clickCount = 0;
+  }, 4000);
+
+  // لو وصلنا 5 ضغطات
+  if (clickCount === 5) {
+    window.location.href = adminPage;
+  }
+});
+
+
+
+
+
   </script>
 </body>
 </html>
