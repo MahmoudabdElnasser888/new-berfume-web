@@ -212,9 +212,9 @@ const storedVersion = localStorage.getItem('productsVersion');
 
 if (!storedVersion || parseInt(storedVersion) < CURRENT_PRODUCTS_VERSION) {
   const products = [
-    { id: 1, name: "BODY SPLASH & BODY LOTION(strawberry cheesecake)", price: 250, quantity: 12, description:"", image:"" },
-    { id: 2, name: "BODY SPLASH & BODY LOTION(pound cake)", price: 250, quantity: 12, description:"", image:"" },
-    { id: 3, name: "BODY SPLASH & BODY LOTION(french fragrance)", price: 250, quantity: 12, description:"", image:"dermopect wite.jpg" }
+    { id: 1, name: "BODY SPLASH & BODY LOTION(strawberry cheesecake)", price: 250, quantity: 12, image:"" },
+    { id: 2, name: "BODY SPLASH & BODY LOTION(pound cake)", price: 250, quantity: 12, image:"" },
+    { id: 3, name: "BODY SPLASH & BODY LOTION(french fragrance)", price: 250, quantity: 12,  image:"dermopect wite.jpg" }
   ];
 
   localStorage.setItem('productsData', JSON.stringify(products));
