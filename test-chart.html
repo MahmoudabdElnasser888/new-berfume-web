@@ -1,235 +1,377 @@
-
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>سلة المشتريات</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>🛒 سلة المشتريات</title>
 <style>
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  background: linear-gradient(to bottom, #d4e9ff, #ffffff);
-}
-
-header {
-  background: rgba(0, 0, 50, 0.8);
-  color: white;
-  padding: 15px;
-  text-align: center;
-}
-
-h1 {
-  margin: 0;
-}
-
-#cart {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 15px;
-  padding: 20px;
-}
-
-.cart-card {
-  background: white;
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  transition: transform 0.3s ease;
-}
-
-.cart-card:hover {
-  transform: translateY(-5px);
-}
-
-.cart-card img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-}
-
-.card-details {
-  padding: 15px;
-  text-align: center;
-}
-
-.old-price {
-  text-decoration: line-through;
-  color: gray;
-  font-size: 14px;
-  display: block;
-}
-
-.new-price {
-  color: red;
-  font-size: 18px;
-  font-weight: bold;
-}
-
-button {
-  background: #007bff;
-  border: none;
-  color: white;
-  padding: 8px 15px;
-  margin: 5px 0;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.3s ease;
-}
-
-button:hover {
-  background: #0056b3;
-}
-
-.checkout-btn {
-  display: block;
-  width: 90%;
-  margin: 20px auto;
-  padding: 12px;
-  font-size: 18px;
-}
+  body {
+    font-family: Tahoma, sans-serif;
+    margin: 0; padding: 0;
+    background: #f7f7f7;
+    color: #222;
+  }
+  header {
+    background: #0d47a1;
+    color: white;
+    font-size: 24px;
+    padding: 15px 20px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .back-btn {
+    margin: 15px 20px;
+    background: #0d47a1;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: background 0.3s;
+  }
+  .back-btn:hover {
+    background: #08306b;
+  }
+  #cart {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 10px 20px 30px;
+    min-height: 200px;
+  }
+  .cart-card {
+    display: flex;
+    background: white;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+  }
+  .cart-card img {
+    width: 150px;
+    height: 130px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  .card-details {
+    padding: 15px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .card-details h3 {
+    margin: 0 0 8px;
+    font-size: 20px;
+    color: #0d47a1;
+  }
+  .card-details p {
+    margin: 4px 0;
+    font-weight: bold;
+    color: #333;
+  }
+  .new-price {
+    color: #0d47a1;
+    font-weight: bold;
+  }
+  .remove-btn {
+    background: #d32f2f;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    align-self: flex-start;
+    font-weight: bold;
+    transition: background 0.3s;
+  }
+  .remove-btn:hover {
+    background: #9a0000;
+  }
+  #buyNowBtn {
+    display: block;
+    width: 220px;
+    margin: 10px auto 40px;
+    background: #0d47a1;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: background 0.3s;
+  }
+  #buyNowBtn:hover {
+    background: #08306b;
+  }
+  /* مودال إتمام الطلب */
+  #checkoutModal {
+    display: none;
+    position: fixed;
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    padding: 10px;
+  }
+  #checkoutModal form {
+    background: white;
+    max-width: 400px;
+    width: 100%;
+    padding: 25px 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgb(0 0 0 / 0.2);
+    display: flex;
+    flex-direction: column;
+  }
+  #checkoutModal h2 {
+    margin: 0 0 20px;
+    color: #0d47a1;
+    text-align: center;
+  }
+  #cartSummary {
+    max-height: 150px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    font-size: 14px;
+    line-height: 1.4;
+    background: #fafafa;
+    border-radius: 8px;
+  }
+  #checkoutModal input[type=text],
+  #checkoutModal input[type=tel] {
+    padding: 10px 12px;
+    margin-bottom: 15px;
+    border: 1px solid #bbb;
+    border-radius: 8px;
+    font-size: 16px;
+  }
+  #checkoutModal textarea {
+    display: none;
+  }
+  #checkoutModal button[type=submit],
+  #cancelCheckout {
+    padding: 12px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    border: none;
+  }
+  #checkoutModal button[type=submit] {
+    background: #0d47a1;
+    color: white;
+    margin-bottom: 12px;
+    transition: background 0.3s;
+  }
+  #checkoutModal button[type=submit]:hover {
+    background: #08306b;
+  }
+  #cancelCheckout {
+    background: #d32f2f;
+    color: white;
+    transition: background 0.3s;
+  }
+  #cancelCheckout:hover {
+    background: #9a0000;
+  }
+  /* رسائل داخل المودال */
+  #checkoutModal p {
+    font-size: 13px;
+    color: #555;
+    text-align: center;
+    margin-top: 10px;
+  }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>🛒 سلة المشتريات</h1>
-</header>
-<button onclick="history.back()">⬅ عودة</button>
+<header>🛒 سلة المشتريات</header>
+<button onclick="history.back()" class="back-btn">⬅ عودة</button>
 
 <div id="cart"></div>
 
-<!-- زر اشتري الآن -->
-<button id="buyNowBtn" class="checkout-btn">اشتري الآن</button>
+<button id="buyNowBtn">اشتري الآن</button>
 
-<!-- نافذة إتمام الطلب -->
-<div id="checkoutModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:10000; align-items:center; justify-content:center;">
-  <form id="checkoutForm" action="https://formsubmit.co/modynasser164@gmail.com" method="POST" style="background:#fff; max-width:520px; width:92%; padding:18px; border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,0.3); direction:rtl; color:#111;">
-    <h2 style="text-align:center; margin-bottom:12px;">إتمام الطلب</h2>
+<div id="checkoutModal" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
+  <form id="checkoutForm" action="https://formsubmit.co/modynasser164@gmail.com" method="POST" autocomplete="off">
+    <h2 id="checkoutTitle">إتمام الطلب</h2>
+    <div id="cartSummary" aria-live="polite" aria-atomic="true"></div>
 
-    <!-- ملخص الطلب -->
-    <div id="cartSummary" style="background:#f5f5f5; padding:10px; border-radius:8px; max-height:200px; overflow:auto; margin-bottom:10px;"></div>
+    <input type="text" name="name" id="custName" placeholder="الاسم" required />
+    <input type="tel" name="phone1" id="custPhone1" placeholder="رقم الهاتف الأول" required />
+    <input type="tel" name="phone2" id="custPhone2" placeholder="رقم الهاتف الثاني (اختياري)" />
+    <input type="text" name="address" id="custAddress" placeholder="العنوان" required />
 
-    <!-- بيانات العميل -->
-    <div style="display:flex; gap:8px; flex-direction:column;">
-      <input type="text" name="name" id="custName" placeholder="الاسم" required>
-      <input type="tel" name="phone1" id="custPhone1" placeholder="رقم الهاتف الأول" required>
-      <input type="tel" name="phone2" id="custPhone2" placeholder="رقم الهاتف الثاني (اختياري)">
-      <input type="text" name="address" id="custAddress" placeholder="العنوان" required>
-    </div>
+    <textarea name="orderDetails" id="orderDetails"></textarea>
 
-    <textarea name="orderDetails" id="orderDetails" style="display:none;"></textarea>
+    <!-- FormSubmit options -->
+    <input type="hidden" name="_captcha" value="false" />
+    <input type="hidden" name="_next" value="thanks.html" />
 
-    <!-- إعدادات FormSubmit -->
-    <input type="hidden" name="_captcha" value="false">
-    <input type="hidden" name="_next" value="https://yourwebsite.com/thanks.html">
-
-    <div style="display:flex; gap:10px; margin-top:12px;">
-      <button type="submit" style="flex:1; background:#28a745;">إرسال الطلب</button>
-      <button type="button" id="cancelCheckout" style="flex:1; background:#ccc; color:#111;">إلغاء</button>
-    </div>
-    <p style="font-size:12px; color:#666; margin-top:8px;">ستصلك رسالة تأكيد على رقم الهاتف عند أول مرة.</p>
+    <button type="submit">إرسال الطلب</button>
+    <button type="button" id="cancelCheckout">إلغاء</button>
+    <p>ستصلك رسالة تأكيد على رقم الهاتف عند أول مرة.</p>
   </form>
 </div>
 
 <script>
-// جلب السلة من localStorage
-function getCart() {
-  try {
-    return JSON.parse(localStorage.getItem('cart')) || [];
-  } catch (e) {
-    return [];
-  }
-}
-
-// إنشاء تفاصيل الطلب
-function buildOrderLines(cart) {
-  return cart.map(item => `${item.name} - الكمية: ${item.quantity} (السعر: ${item.price || 'N/A'})`);
-}
-
-
-// عرض ملخص الطلب
-function renderCartSummary(cart) {
-  const div = document.getElementById('cartSummary');
-  if (!cart || cart.length === 0) {
-    div.innerHTML = '<p style="text-align:center; color:#555;">السلة فارغة</p>';
-    return;
-  }
-  div.innerHTML = cart.map(item => `
-    <div style="padding:6px 8px; border-bottom:1px solid #e6e6e6;">
-      <strong>${escapeHtml(item.name)}</strong><br>
-      <small>الكمية: ${item.quantity} • السعر: ${item.price || 0} جنيه</small>
-    </div>
-  `).join('');
-}
-
-// حماية النص
-function escapeHtml(text) {
-  if (typeof text !== 'string') return text;
-  return text.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-}
-
-// عند الضغط على "اشتري الآن"
-document.getElementById('buyNowBtn').addEventListener('click', () => {
-  const cart = getCart();
-  if (!cart.length) {
-    alert('السلة فارغة - أضف منتج أولًا.');
-    return;
-  }
-  renderCartSummary(cart);
-  document.getElementById('orderDetails').value = buildOrderLines(cart).join('\n');
-  document.getElementById('checkoutModal').style.display = 'flex';
-});
-
-// إلغاء الطلب
-document.getElementById('cancelCheckout').addEventListener('click', () => {
-  document.getElementById('checkoutModal').style.display = 'none';
-});
-
-// إرسال الطلب
-document.getElementById('checkoutForm').addEventListener('submit', e => {
-  const cart = getCart();
-  if (!cart.length) {
-    e.preventDefault();
-    alert('السلة فارغة.');
-    document.getElementById('checkoutModal').style.display = 'none';
-    return;
-  }
-  document.getElementById('orderDetails').value = buildOrderLines(cart).join('\n');
-  setTimeout(() => {
-    localStorage.removeItem('cart');
-  }, 800);
-});
-
-// عرض المنتجات في صفحة السلة
-function renderCartItems() {
-  const cart = getCart();
-  const container = document.getElementById('cart');
-
-  if (!cart.length) {
-    container.innerHTML = '<p style="text-align:center; color:#555;">السلة فارغة</p>';
-    return;
+  // جلب السلة من localStorage
+  function getCart() {
+    try {
+      return JSON.parse(localStorage.getItem('cart')) || [];
+    } catch {
+      return [];
+    }
   }
 
-  container.innerHTML = cart.map(item => `
-    <div class="cart-card">
-      <img src="${item.image || 'default.jpg'}" alt="${escapeHtml(item.name)}">
-      <div class="card-details">
-        <h3>${escapeHtml(item.name)}</h3>
-        <span class="new-price">${item.price} جنيه</span>
-        <p>الكمية: ${item.quantity}</p>
+  // دالة لحماية النص من XSS
+  function escapeHtml(text) {
+    if (typeof text !== 'string') return text;
+    return text.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+
+  // إنشاء تفاصيل الطلب نصيّة (string array)
+  function buildOrderLines(cart) {
+    return cart.map(item => `${item.name} - الكمية: ${item.quantity} (السعر: ${item.price || 'N/A'})`);
+  }
+
+  // عرض ملخص الطلب داخل الفورم
+  function renderCartSummary(cart) {
+    const div = document.getElementById('cartSummary');
+    if (!cart.length) {
+      div.innerHTML = '<p style="text-align:center; color:#555;">السلة فارغة</p>';
+      return;
+    }
+    div.innerHTML = cart.map(item =>
+      `<div style="padding:6px 8px; border-bottom:1px solid #e6e6e6;">
+        <strong>${escapeHtml(item.name)}</strong><br>
+        <small>الكمية: ${item.quantity} • السعر: ${item.price || 0} جنيه</small>
+      </div>`
+    ).join('');
+  }
+
+  // عرض المنتجات في السلة
+  function renderCartItems() {
+    const cart = getCart();
+    const container = document.getElementById('cart');
+
+    if (!cart.length) {
+      container.innerHTML = '<p style="text-align:center; color:#555;">السلة فارغة</p>';
+      return;
+    }
+
+    container.innerHTML = cart.map(item => `
+      <div class="cart-card" role="region" aria-label="منتج في السلة: ${escapeHtml(item.name)}">
+        <img src="${item.image}" alt="${escapeHtml(item.name)}" />
+        <div class="card-details">
+          <h3>${escapeHtml(item.name)}</h3>
+          <p class="new-price">${item.price} جنيه</p>
+          <p>الكمية: ${item.quantity}</p>
+          <button class="remove-btn" onclick="removeFromCart(${item.id})" aria-label="إزالة ${escapeHtml(item.name)} من السلة">إزالة المنتج</button>
+        </div>
       </div>
-    </div>
-  `).join('');
-}
+    `).join('');
+  }
 
-// شغل عرض السلة أول ما الصفحة تفتح
-renderCartItems();
+  // عند الضغط على زر "اشتري الآن"
+  document.getElementById('buyNowBtn').addEventListener('click', () => {
+    const cart = getCart();
+    if (!cart.length) {
+      alert('السلة فارغة - أضف منتج أولًا.');
+      return;
+    }
+    renderCartSummary(cart);
+    document.getElementById('orderDetails').value = buildOrderLines(cart).join('\n');
+    document.getElementById('checkoutModal').style.display = 'flex';
+  });
 
+  // إلغاء الطلب (إغلاق المودال)
+  document.getElementById('cancelCheckout').addEventListener('click', () => {
+    document.getElementById('checkoutModal').style.display = 'none';
+  });
 
+  // عند إرسال الفورم
+  document.getElementById('checkoutForm').addEventListener('submit', e => {
+    const cart = getCart();
+    if (!cart.length) {
+      e.preventDefault();
+      alert('السلة فارغة.');
+      document.getElementById('checkoutModal').style.display = 'none';
+      return;
+    }
+    document.getElementById('orderDetails').value = buildOrderLines(cart).join('\n');
+    // بعد الإرسال ننظف السلة بعد ثواني بسيطة
+    setTimeout(() => {
+      localStorage.removeItem('cart');
+      renderCartItems();
+    }, 1000);
+  });
 
+  // دالة إزالة منتج من السلة وإرجاع الكمية للمخزون في صفحات متعددة
+  function removeFromCart(id) {
+    let cart = getCart();
 
+    // مفاتيح صفحات المنتجات (زود أو قلل حسب حاجتك)
+    const productPagesKeys = [
+      "productsData_page1",
+      "productsData_page2",
+      "productsData_page3",
+      "productsData_page4",
+      "productsData_page5",
+      "productsData_page6",
+      "productsData_page7",
+      "productsData_page8",
+      "productsData_page9",
+      "productsData_page10",
+      "productsData_page11",
+      "productsData_page12",
+      "productsData_page13",
+      "productsData_page14",
+      "productsData_page15",
+      "productsData_page16"
 
+    ];
+
+    // ابحث عن المنتج في السلة
+    const cartItemIndex = cart.findIndex(item => item.id === id);
+    if (cartItemIndex === -1) return;
+
+    const cartItem = cart[cartItemIndex];
+    let found = false;
+
+    // دور على المنتج في كل صفحات المنتجات وارجع الكمية
+    for (const key of productPagesKeys) {
+      let products = JSON.parse(localStorage.getItem(key)) || [];
+      for (let i = 0; i < products.length; i++) {
+        if (products[i].id === id) {
+          products[i].quantity += cartItem.quantity;
+          localStorage.setItem(key, JSON.stringify(products));
+          found = true;
+          break;
+        }
+      }
+      if (found) break;
+    }
+
+    // شيل المنتج من السلة
+    cart.splice(cartItemIndex, 1);
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    // حدث العرض
+    renderCartItems();
+    if (typeof displayProducts === "function") {
+      displayProducts();
+    }
+    alert('تمت إزالة المنتج من السلة والكمية عادت للمخزون.');
+  }
+
+  // عرض السلة أول ما الصفحة تفتح
+  renderCartItems();
 </script>
 
 </body>

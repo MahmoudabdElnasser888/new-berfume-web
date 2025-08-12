@@ -1,34 +1,112 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>إدارة المخزون</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>لوحة إدارة المخزون</title>
 <style>
-  body { font-family: Arial, sans-serif; direction: rtl; padding: 20px; }
-  table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-  th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
-  button { padding: 5px 10px; }
-  #adminPanel { display: none; }
-  #loginBox { text-align: center; margin-top: 50px; }
+  body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    direction: rtl;
+    background: #f5f5f5;
+  }
+  h1 {
+    text-align: center;
+    color: #0d47a1;
+  }
+  #loginBox {
+    max-width: 300px;
+    margin: 60px auto;
+    text-align: center;
+  }
+  #loginBox input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+  #loginBox button {
+    background-color: #0d47a1;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 6px;
+  }
+  #loginBox button:hover {
+    background-color: #08306b;
+  }
+  #adminPanel {
+    max-width: 900px;
+    margin: 20px auto;
+    display: none;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center;
+    font-size: 16px;
+  }
+  th {
+    background-color: #0d47a1;
+    color: white;
+  }
+  button.qty-btn {
+    background-color: #0d47a1;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    margin: 0 3px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+  }
+  button.qty-btn:hover {
+    background-color: #08306b;
+  }
+  #saveBtn {
+    margin-top: 15px;
+    background-color: #0d47a1;
+    color: white;
+    padding: 12px 30px;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  #saveBtn:hover {
+    background-color: #08306b;
+  }
 </style>
 </head>
 <body>
 
 <h1>لوحة إدارة المخزون</h1>
 
-<!-- صندوق تسجيل الدخول -->
 <div id="loginBox">
   <h2>أدخل كلمة السر</h2>
-  <input type="password" id="password" placeholder="كلمة السر">
+  <input type="password" id="password" placeholder="كلمة السر" />
   <button onclick="checkPassword()">دخول</button>
 </div>
 
-<!-- لوحة التحكم -->
 <div id="adminPanel">
   <table>
     <thead>
       <tr>
+        <th>المفتاح (المصدر)</th>
         <th>المنتج</th>
         <th>الكمية</th>
         <th>تحكم</th>
@@ -36,54 +114,114 @@
     </thead>
     <tbody id="productsTable"></tbody>
   </table>
-  <br>
-  <button onclick="saveChanges()">حفظ التغييرات</button>
+  <button id="saveBtn" onclick="saveChanges()">حفظ التغييرات</button>
 </div>
 
 <script>
-// كلمة السر
-const ADMIN_PASSWORD = "mahmoud7777c50"; // غيرها للباسورد اللي تريده
+  const ADMIN_PASSWORD = "0";
 
-let products = JSON.parse(localStorage.getItem("productsData")) || [];
+  // كل مفاتيح التخزين للمنتجات عندك هنا
+  const STORAGE_KEYS = [
+    "productsData_page1",
+    "productsData_page2",
+    "productsData_page3",
+    "productsData_page4",
+    "productsData_page5",
+    "productsData_page6",
+    "productsData_page7",
+    "productsData_page8",
+    "productsData_page9",
+    "productsData_page10",
+    "productsData_page11",
+    "productsData_page12",
+    "productsData_page13",
+    "productsData_page14",
+    "productsData_page15",
+    "productsData_page16"
 
-function checkPassword(){
-  let entered = document.getElementById("password").value;
-  if(entered === ADMIN_PASSWORD){
-    document.getElementById("loginBox").style.display = "none";
-    document.getElementById("adminPanel").style.display = "block";
-    renderTable();
-  } else {
-    alert("كلمة السر غير صحيحة!");
+    // ممكن تضيف مفاتيح أخرى هنا لو في صفحات منتجات إضافية
+  ];
+
+  let products = [];  // هنجمع كل المنتجات من كل المفاتيح هنا
+
+  // تخزين المنتجات منفصلة لكل مفتاح
+  let productsByKey = {};
+
+  function checkPassword(){
+    const entered = document.getElementById("password").value;
+    if(entered === ADMIN_PASSWORD){
+      document.getElementById("loginBox").style.display = "none";
+      document.getElementById("adminPanel").style.display = "block";
+      loadAllProducts();
+      renderTable();
+    } else {
+      alert("كلمة السر غير صحيحة!");
+    }
   }
-}
 
-function renderTable(){
-  let table = document.getElementById("productsTable");
-  table.innerHTML = "";
-  products.forEach((prod, index) => {
-    table.innerHTML += `
-      <tr>
-        <td>${prod.name}</td>
-        <td id="qty-${index}">${prod.quantity}</td>
-        <td>
-          <button onclick="changeQty(${index}, 1)">+</button>
-          <button onclick="changeQty(${index}, -1)">-</button>
-        </td>
-      </tr>
-    `;
-  });
-}
+  function loadAllProducts() {
+    products = [];
+    productsByKey = {};
 
-function changeQty(index, change){
-  products[index].quantity += change;
-  if(products[index].quantity < 0) products[index].quantity = 0;
-  document.getElementById(`qty-${index}`).innerText = products[index].quantity;
-}
+    STORAGE_KEYS.forEach(key => {
+      let prods = JSON.parse(localStorage.getItem(key)) || [];
+      productsByKey[key] = prods;
 
-function saveChanges(){
-  localStorage.setItem("productsData", JSON.stringify(products));
-  alert("تم حفظ التغييرات");
-}
+      // أضف مصدر المنتج (المفتاح) لكل منتج عشان نعرف من فين
+      prods.forEach(p => {
+        products.push({...p, storageKey: key});
+      });
+    });
+  }
+
+  function renderTable() {
+    const table = document.getElementById("productsTable");
+    table.innerHTML = "";
+    products.forEach((prod, index) => {
+      table.innerHTML += `
+        <tr>
+          <td>${prod.storageKey}</td>
+          <td>${prod.name}</td>
+          <td id="qty-${index}">${prod.quantity}</td>
+          <td>
+            <button class="qty-btn" onclick="changeQty(${index}, 1)">+</button>
+            <button class="qty-btn" onclick="changeQty(${index}, -1)">-</button>
+          </td>
+        </tr>
+      `;
+    });
+  }
+
+  function changeQty(index, change) {
+    products[index].quantity += change;
+    if(products[index].quantity < 0) products[index].quantity = 0;
+
+    document.getElementById(`qty-${index}`).innerText = products[index].quantity;
+  }
+
+  function saveChanges() {
+    // حدث الكميات في productsByKey من بيانات products المجمعة
+    productsByKey = {};
+    STORAGE_KEYS.forEach(key => productsByKey[key] = []);
+
+    products.forEach(prod => {
+      productsByKey[prod.storageKey].push({
+        id: prod.id,
+        name: prod.name,
+        price: prod.price,
+        quantity: prod.quantity,
+        description: prod.description || "",
+        image: prod.image || ""
+      });
+    });
+
+    // احفظ لكل مفتاح المنتجات
+    STORAGE_KEYS.forEach(key => {
+      localStorage.setItem(key, JSON.stringify(productsByKey[key]));
+    });
+
+    alert("تم حفظ التغييرات بنجاح!");
+  }
 </script>
 
 </body>

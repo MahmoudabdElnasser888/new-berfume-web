@@ -236,25 +236,26 @@ button:hover {
 <div id="products"></div>
 <script src="script.js"></script>
 <script>
-
-// **تحديث نسخة بيانات المنتجات (versioning)**
-const CURRENT_PRODUCTS_VERSION = 14; // زود الرقم لما تحدث بيانات المنتجات
-
-const STORAGE_PRODUCTS_DATA_KEY = "productsData_page1";
-const STORAGE_PRODUCTS_VERSION_KEY = "productsVersion_page1";
-
+const CURRENT_PRODUCTS_VERSION = 35;
+const STORAGE_PRODUCTS_DATA_KEY = "productsData_page15";
+const STORAGE_PRODUCTS_VERSION_KEY = "productsVersion_page15";
 
 const storedVersion = localStorage.getItem(STORAGE_PRODUCTS_VERSION_KEY);
 
 if (!storedVersion || parseInt(storedVersion) < CURRENT_PRODUCTS_VERSION) {
   const products = [
-    { id: 1, name: "BODY SPLASH & BODY LOTION(french fragrance)", price: 250, quantity: 12, description:"", image:"dermo2.jpg" }
+    { id: 15, name: "BODY LOTION (RoseMarry)",
+        price: 100,
+          quantity: 12,
+          description:"(RoseMarry) – Soft French Scent A rich yet non-greasy lotion infused with Shea Butter, Argan Oil, Panthenol, Glycerin, and Vitamin E. Deeply hydrates and softens the skin while leaving a smooth, elegant French scent. Safe for all skin types and perfect for daily use",
+           image:"rosemary.png"
+    }
   ];
 
   localStorage.setItem(STORAGE_PRODUCTS_DATA_KEY, JSON.stringify(products));
   localStorage.setItem(STORAGE_PRODUCTS_VERSION_KEY, CURRENT_PRODUCTS_VERSION);
-
 }
+
 let selectedQuantities = {};
 
 function displayProducts() {
@@ -326,6 +327,7 @@ function addToCart(id) {
 }
 
 displayProducts();
+
 
 </script>
 

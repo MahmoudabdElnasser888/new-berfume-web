@@ -236,25 +236,21 @@ button:hover {
 <div id="products"></div>
 <script src="script.js"></script>
 <script>
-
-// **تحديث نسخة بيانات المنتجات (versioning)**
-const CURRENT_PRODUCTS_VERSION = 14; // زود الرقم لما تحدث بيانات المنتجات
-
-const STORAGE_PRODUCTS_DATA_KEY = "productsData_page1";
-const STORAGE_PRODUCTS_VERSION_KEY = "productsVersion_page1";
-
+const CURRENT_PRODUCTS_VERSION = 14;
+const STORAGE_PRODUCTS_DATA_KEY = "productsData_page2";
+const STORAGE_PRODUCTS_VERSION_KEY = "productsVersion_page2";
 
 const storedVersion = localStorage.getItem(STORAGE_PRODUCTS_VERSION_KEY);
 
 if (!storedVersion || parseInt(storedVersion) < CURRENT_PRODUCTS_VERSION) {
   const products = [
-    { id: 1, name: "BODY SPLASH & BODY LOTION(french fragrance)", price: 250, quantity: 12, description:"", image:"dermo2.jpg" }
+    { id: 101, name: "BODY LOTION & BODY SPLASH(POUND CAKE)", price: 250, quantity: 8, description:"وصف المنتج هنا", image:"POUND-CAKE.jpg" }
   ];
 
   localStorage.setItem(STORAGE_PRODUCTS_DATA_KEY, JSON.stringify(products));
   localStorage.setItem(STORAGE_PRODUCTS_VERSION_KEY, CURRENT_PRODUCTS_VERSION);
-
 }
+
 let selectedQuantities = {};
 
 function displayProducts() {
@@ -326,6 +322,7 @@ function addToCart(id) {
 }
 
 displayProducts();
+
 
 </script>
 

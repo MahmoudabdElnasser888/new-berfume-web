@@ -410,7 +410,7 @@
         </div>
       </div>
 
-      <div class="card" tabindex="0" role="button" onclick="location.href='sauvage.html'">
+      <div class="card" tabindex="0" role="button" onclick="location.href='start-lotion.html'">
         <img src="lotion start.jpg" alt="Sauvage Dior" />
         <h3>LOTION</h3>
         <p>"Lotion is a lightweight, creamy moisturizer designed to keep your skin soft, smooth, and hydrated. It absorbs quickly, leaving a delicate touch and often a refreshing scent that makes your skin feel pampered and renewed."
@@ -430,7 +430,7 @@
         </div>
       </div>
 
-   <div class="card" tabindex="0" role="button" onclick="location.href='test-prod.html'">
+   <div class="card" tabindex="0" role="button" onclick="location.href='start-combo.html'">
         <img src="combo.jpg" alt="Valentino Eau de Parfum Hombre" />
         <h3>COMBO</h3>
         <p>"A complete set crafted for you, with more value for less."</p>
@@ -540,11 +540,11 @@ const adminPage = 'admin.html';
 perfumeTitle.addEventListener('click', () => {
   clickCount++;
 
-  // إعادة ضبط العداد بعد 4 ثواني بدون ضغطات
+  // إعادة ضبط العداد بعد 1 ثواني بدون ضغطات
   clearTimeout(clickTimer);
   clickTimer = setTimeout(() => {
     clickCount = 0;
-  }, 4000);
+  }, 1000);
 
   // لو وصلنا 5 ضغطات
   if (clickCount === 5) {
